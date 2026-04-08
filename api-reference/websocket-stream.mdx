@@ -1,0 +1,102 @@
+---
+title: "WebSocket Stream"
+description: "Real-time article stream over WebSocket"
+---
+
+## Connection
+
+```
+wss://api.tickr.dev/v1/stream?api_key=YOUR_KEY
+```
+
+API key is passed as a query parameter (not a header) since WebSocket connections don't support custom headers in browsers.
+
+## Protocol
+
+### 1. Connect
+
+Open a WebSocket connection to the URL above.
+
+### 2. Subscribe (within 30 seconds)
+
+Send a JSON message specifying which tickers to receive:
+
+```json
+// Specific tickers
+{ "tickers": ["AAPL", "TSLA", "NVDA"] }
+
+// Everything
+{ "tickers": ["*"] }
+```
+
+### 3. Receive articles
+
+The server pushes JSON articles as they arrive:
+
+```json
+{
+  "id": "01KNKV33C9DDADR1HRRWGCSA8V",
+  "source": "firstsquawk",
+  "title": "BREAKING: MISSILES TARGET US FACILITY NEAR BAGHDAD",
+  "tickers": [],
+  "urgency": "breaking",
+  "content_type": "tweet",
+  "published_at": "2026-04-07T20:22:42Z",
+  "received_at": "2026-04-07T20:22:43Z"
+}
+```
+
+## Cost
+
+Each message pushed costs **1 credit**. Connection itself is free.
+
+## Disconnection
+
+The connection closes when:
+- Credits are exhausted (close code `1008`)
+- No subscription sent within 30 seconds (close code `1008`)
+- Invalid API key (close code `1008`)
+- Server maintenance (implement auto-reconnect)
+
+## Example: Python
+
+```python
+import asyncio
+import json
+import websockets
+
+async def main():
+    async with websockets.connect(
+        "wss://api.tickr.dev/v1/stream?api_key=YOUR_KEY"
+    ) as ws:
+        await ws.send(json.dumps({"tickers": ["*"]}))
+
+        async for message in ws:
+            article = json.loads(message)
+            if article["urgency"] == "breaking":
+                print(f"ALERT: {article['title']}")
+
+asyncio.run(main())
+```
+
+## Example: JavaScript
+
+```javascript
+const ws = new WebSocket("wss://api.tickr.dev/v1/stream?api_key=YOUR_KEY");
+
+ws.onopen = () => {
+  ws.send(JSON.stringify({ tickers: ["*"] }));
+};
+
+ws.onmessage = ({ data }) => {
+  const article = JSON.parse(data);
+  if (article.urgency === "breaking") {
+    console.log(`ALERT: ${article.title}`);
+  }
+};
+
+ws.onclose = ({ code }) => {
+  if (code === 1008) console.log("Credits exhausted or auth failed");
+  // Implement reconnection logic
+};
+```

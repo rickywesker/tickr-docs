@@ -1,0 +1,77 @@
+---
+title: WebSocket Streaming
+description: "Real-time news delivery over WebSocket"
+---
+
+## Connection
+
+Connect to the WebSocket endpoint with your API key as a query parameter:
+
+```
+wss://api.tickr.dev/v1/stream?api_key=YOUR_KEY
+```
+
+## Subscription
+
+After connecting, send a JSON message to subscribe to specific tickers:
+
+```json
+// Subscribe to specific tickers
+{ "tickers": ["AAPL", "TSLA", "NVDA"] }
+
+// Subscribe to everything (firehose)
+{ "tickers": ["*"] }
+```
+
+You must send this subscription message within **30 seconds** of connecting, or the connection will be closed.
+
+## Message Format
+
+Each message is a JSON object matching the article schema:
+
+```json
+{
+  "id": "01KNKV33C9DDADR1HRRWGCSA8V",
+  "source": "firstsquawk",
+  "title": "BREAKING: Fed announces emergency rate cut",
+  "tickers": ["SPY", "QQQ"],
+  "urgency": "breaking",
+  "content_type": "tweet",
+  "published_at": "2026-04-07T14:30:00Z",
+  "received_at": "2026-04-07T14:30:02Z"
+}
+```
+
+## Credits
+
+Each message pushed to your connection costs **1 credit**. If your credits are exhausted, the connection closes with code `1008`.
+
+## Reconnection
+
+The server may close connections periodically. Implement automatic reconnection with exponential backoff:
+
+```python
+import asyncio
+import json
+import websockets
+
+async def stream_with_reconnect():
+    backoff = 1
+    while True:
+        try:
+            async with websockets.connect(
+                "wss://api.tickr.dev/v1/stream?api_key=YOUR_KEY"
+            ) as ws:
+                await ws.send(json.dumps({"tickers": ["*"]}))
+                backoff = 1  # reset on success
+                async for msg in ws:
+                    article = json.loads(msg)
+                    process(article)
+        except websockets.ConnectionClosed:
+            await asyncio.sleep(backoff)
+            backoff = min(backoff * 2, 60)
+```
+
+## Filtering
+
+Only articles matching your subscribed tickers are sent. Ticker matching is case-insensitive. If you subscribe to `["*"]`, you receive all articles regardless of ticker.

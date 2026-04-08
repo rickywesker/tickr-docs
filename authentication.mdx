@@ -1,0 +1,59 @@
+---
+title: Authentication
+description: "How to authenticate your API requests"
+---
+
+## API Key Authentication
+
+All API requests require an API key passed via the `X-API-Key` header.
+
+```bash
+curl -H "X-API-Key: tn_live_your_key_here" \
+  "https://api.tickr.dev/v1/news"
+```
+
+## Getting Your API Key
+
+1. Sign up at [tickr.dev](https://tickr.dev)
+2. Go to [Dashboard > API Keys](https://tickr.dev/dashboard/keys)
+3. Click **Create Key**
+4. Copy the key immediately — it's only shown once
+
+## Key Format
+
+tickr API keys use a prefix format for easy identification:
+
+| Prefix | Environment |
+|--------|------------|
+| `tn_live_` | Production |
+| `tn_test_` | Sandbox (coming soon) |
+
+## Security Best Practices
+
+<Warning>
+Never expose your API key in client-side code, public repositories, or browser JavaScript. Always call the tickr API from your backend server.
+</Warning>
+
+- Store keys in environment variables, not in code
+- Use different keys for different applications
+- Revoke and rotate keys if you suspect exposure
+- Each key has independent rate limits and usage tracking
+
+## Error Responses
+
+| Status | Meaning |
+|--------|---------|
+| `401` | Invalid or missing API key |
+| `403` | Key is inactive or insufficient credits |
+| `429` | Rate limit exceeded |
+
+```json
+// 401 — Invalid key
+{ "detail": "Invalid API key" }
+
+// 403 — No credits
+{ "detail": "Insufficient credits" }
+
+// 429 — Rate limited
+{ "detail": "Rate limit exceeded. Try again shortly." }
+```

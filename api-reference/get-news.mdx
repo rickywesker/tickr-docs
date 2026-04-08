@@ -1,0 +1,79 @@
+---
+title: "Get News"
+api: "GET https://api.tickr.dev/v1/news"
+description: "Retrieve recent financial news articles"
+---
+
+## Query Parameters
+
+<ParamField query="ticker" type="string" optional>
+  Filter by stock ticker symbol (e.g., `AAPL`, `TSLA`). Case-insensitive.
+</ParamField>
+
+<ParamField query="limit" type="integer" default="50" optional>
+  Number of articles to return. Min: 1, Max: 100.
+</ParamField>
+
+<ParamField query="since" type="string" optional>
+  Only return articles received after this ISO 8601 datetime. Example: `2026-04-07T00:00:00Z`
+</ParamField>
+
+<ParamField query="urgency" type="string" optional>
+  Filter by urgency level: `breaking`, `flash`, or `regular`.
+</ParamField>
+
+## Response
+
+<ResponseField name="count" type="integer">
+  Number of articles returned.
+</ResponseField>
+
+<ResponseField name="articles" type="Article[]">
+  Array of article objects.
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -H "X-API-Key: YOUR_KEY" \
+  "https://api.tickr.dev/v1/news?ticker=AAPL&limit=5&urgency=breaking"
+```
+
+```python Python
+import httpx
+
+resp = httpx.get(
+    "https://api.tickr.dev/v1/news",
+    headers={"X-API-Key": "YOUR_KEY"},
+    params={"ticker": "AAPL", "limit": 5}
+)
+articles = resp.json()["articles"]
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{
+  "count": 2,
+  "articles": [
+    {
+      "id": "01KNKV33C9DDADR1HRRWGCSA8V",
+      "source": "seekingalpha",
+      "title": "Apple announces record Q2 earnings, beats estimates by 12%",
+      "url": "https://seekingalpha.com/news/4572930",
+      "content": null,
+      "content_type": "headline",
+      "tickers": ["AAPL"],
+      "tags": ["seekingalpha", "+3.2%"],
+      "sentiment": null,
+      "urgency": "breaking",
+      "published_at": "2026-04-07T14:30:00Z",
+      "received_at": "2026-04-07T14:30:02Z"
+    }
+  ]
+}
+```
+
+</ResponseExample>

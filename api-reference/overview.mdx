@@ -1,0 +1,54 @@
+---
+title: API Overview
+description: "Base URL, authentication, and response format"
+---
+
+## Base URL
+
+```
+https://api.tickr.dev
+```
+
+## Authentication
+
+All endpoints require an API key via the `X-API-Key` header:
+
+```bash
+curl -H "X-API-Key: tn_live_your_key" https://api.tickr.dev/v1/news
+```
+
+## Response Format
+
+All responses are JSON. Successful responses return `200`. Error responses include a `detail` field:
+
+```json
+{ "detail": "Error description" }
+```
+
+## Article Schema
+
+Every article returned by the API follows this structure:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Unique ULID, sortable by time |
+| `source` | string | Data source (`firstsquawk`, `seekingalpha`) |
+| `title` | string | Article headline |
+| `url` | string? | Link to original article |
+| `content` | string? | Full text or summary (when available) |
+| `content_type` | string | `tweet`, `article`, or `headline` |
+| `tickers` | string[] | Associated stock tickers |
+| `tags` | string[] | Additional tags |
+| `sentiment` | string? | Sentiment label (when available) |
+| `urgency` | string | `breaking`, `flash`, or `regular` |
+| `published_at` | string | ISO 8601 publication time |
+| `received_at` | string | ISO 8601 time tickr received the article |
+
+## Endpoints
+
+| Method | Path | Description | Cost |
+|--------|------|-------------|------|
+| GET | `/v1/news` | List recent articles | 1 credit |
+| GET | `/v1/news/{id}` | Get single article | 1 credit |
+| WS | `/v1/stream` | Real-time stream | 1 credit/msg |
+| GET | `/v1/account/usage` | Check balance | Free |

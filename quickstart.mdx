@@ -1,0 +1,109 @@
+---
+title: Quickstart
+description: "Get your first API response in under 2 minutes"
+---
+
+## 1. Get your API key
+
+Sign up at [tickr.dev](https://tickr.dev) and create an API key from your [dashboard](https://tickr.dev/dashboard/keys).
+
+Your key looks like: `tn_live_a8f3k2m1n...`
+
+## 2. Make your first request
+
+<CodeGroup>
+
+```bash cURL
+curl -H "X-API-Key: YOUR_KEY" \
+  "https://api.tickr.dev/v1/news?limit=5"
+```
+
+```python Python
+import httpx
+
+client = httpx.Client(
+    base_url="https://api.tickr.dev",
+    headers={"X-API-Key": "YOUR_KEY"}
+)
+
+response = client.get("/v1/news", params={"ticker": "AAPL", "limit": 5})
+articles = response.json()["articles"]
+
+for article in articles:
+    print(f"[{article['urgency']}] {article['tickers']} {article['title']}")
+```
+
+```javascript Node.js
+const response = await fetch("https://api.tickr.dev/v1/news?limit=5", {
+  headers: { "X-API-Key": "YOUR_KEY" }
+});
+
+const { articles } = await response.json();
+articles.forEach(a => {
+  console.log(`[${a.urgency}] ${a.tickers.join(",")} ${a.title}`);
+});
+```
+
+</CodeGroup>
+
+## 3. Stream real-time news
+
+Connect via WebSocket for live updates:
+
+<CodeGroup>
+
+```python Python
+import asyncio
+import json
+import websockets
+
+async def stream():
+    uri = "wss://api.tickr.dev/v1/stream?api_key=YOUR_KEY"
+    async with websockets.connect(uri) as ws:
+        # Subscribe to specific tickers (or ["*"] for all)
+        await ws.send(json.dumps({"tickers": ["AAPL", "TSLA", "NVDA"]}))
+
+        async for message in ws:
+            article = json.loads(message)
+            print(f"[{article['urgency']}] {article['title']}")
+
+asyncio.run(stream())
+```
+
+```javascript Node.js
+const ws = new WebSocket("wss://api.tickr.dev/v1/stream?api_key=YOUR_KEY");
+
+ws.onopen = () => {
+  ws.send(JSON.stringify({ tickers: ["AAPL", "TSLA", "NVDA"] }));
+};
+
+ws.onmessage = (event) => {
+  const article = JSON.parse(event.data);
+  console.log(`[${article.urgency}] ${article.title}`);
+};
+```
+
+</CodeGroup>
+
+## 4. Check your usage
+
+```bash
+curl -H "X-API-Key: YOUR_KEY" \
+  "https://api.tickr.dev/v1/account/usage"
+```
+
+```json
+{
+  "credits_remaining": 4995,
+  "credits_used_this_period": 5,
+  "tier": "starter",
+  "rate_limit": 30,
+  "period_end": "2026-05-07T00:00:00Z"
+}
+```
+
+## Next steps
+
+- [Authentication](/authentication) — API key best practices
+- [API Reference](/api-reference/overview) — Full endpoint documentation
+- [Credits & Pricing](/concepts/credits) — How billing works

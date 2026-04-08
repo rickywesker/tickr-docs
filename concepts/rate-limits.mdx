@@ -1,0 +1,33 @@
+---
+title: Rate Limits
+description: "Request rate limits per plan"
+---
+
+## Rate Limits
+
+Each API key has a per-minute request limit based on your plan tier. Limits are enforced via a sliding window.
+
+| Plan | Requests per Minute |
+|------|-------------------|
+| Free | 10 |
+| Starter | 30 |
+| Pro | 120 |
+| Power | 500 |
+
+## Rate Limit Headers
+
+When you're rate limited, the API returns `429 Too Many Requests`:
+
+```json
+{ "detail": "Rate limit exceeded. Try again shortly." }
+```
+
+## Best Practices
+
+- **Cache responses** — if you're polling `/v1/news` frequently, cache results for a few seconds
+- **Use WebSocket** for real-time data instead of polling the REST API
+- **Spread requests** — avoid bursting all requests in the first second of each minute
+
+## IP-Based Protection
+
+tickr also monitors for abuse patterns. If a single IP address uses 3 or more different API keys within 1 minute, that IP is temporarily blocked for 10 minutes. This prevents credential stuffing attacks.

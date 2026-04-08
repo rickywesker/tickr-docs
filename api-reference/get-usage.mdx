@@ -1,0 +1,63 @@
+---
+title: "Get Usage"
+api: "GET https://api.tickr.dev/v1/account/usage"
+description: "Check your credit balance and usage stats"
+---
+
+This endpoint is **free** — it does not cost any credits.
+
+## Response
+
+<ResponseField name="credits_remaining" type="integer">
+  Credits available in your current billing period.
+</ResponseField>
+
+<ResponseField name="credits_used_this_period" type="integer">
+  Credits consumed since the start of the current billing period.
+</ResponseField>
+
+<ResponseField name="tier" type="string">
+  Your current plan: `free`, `starter`, `pro`, or `power`.
+</ResponseField>
+
+<ResponseField name="rate_limit" type="integer">
+  Your per-minute request limit.
+</ResponseField>
+
+<ResponseField name="period_end" type="string">
+  ISO 8601 datetime when the current billing period ends. `null` for free tier.
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -H "X-API-Key: YOUR_KEY" \
+  "https://api.tickr.dev/v1/account/usage"
+```
+
+```python Python
+import httpx
+
+resp = httpx.get(
+    "https://api.tickr.dev/v1/account/usage",
+    headers={"X-API-Key": "YOUR_KEY"}
+)
+usage = resp.json()
+print(f"Credits left: {usage['credits_remaining']}")
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{
+  "credits_remaining": 28500,
+  "credits_used_this_period": 1500,
+  "tier": "pro",
+  "rate_limit": 120,
+  "period_end": "2026-05-07T00:00:00Z"
+}
+```
+
+</ResponseExample>

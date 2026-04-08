@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "tickr",
+  "name": "TradingNews",
   "logo": {
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg"
@@ -18,12 +18,12 @@
   "topbarLinks": [
     {
       "name": "Dashboard",
-      "url": "https://tickr.dev/dashboard"
+      "url": "https://tradingnews.press/dashboard"
     }
   ],
   "topbarCtaButton": {
     "name": "Get API Key",
-    "url": "https://tickr.dev/dashboard/keys"
+    "url": "https://tradingnews.press/dashboard/keys"
   },
   "tabs": [
     {
@@ -52,6 +52,7 @@
     }
   ],
   "footerSocials": {
-    "twitter": "https://twitter.com/tickrdev"
+    "twitter": "https://twitter.com/tradingnewsdev",
+    "github": "https://github.com/rickywesker/tickr"
   }
 }

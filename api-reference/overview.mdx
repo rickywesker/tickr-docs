@@ -6,7 +6,7 @@ description: "Base URL, authentication, and response format"
 ## Base URL
 
 ```
-https://api.tickr.dev
+https://api.tradingnews.press
 ```
 
 ## Authentication
@@ -14,7 +14,7 @@ https://api.tickr.dev
 All endpoints require an API key via the `X-API-Key` header:
 
 ```bash
-curl -H "X-API-Key: tn_live_your_key" https://api.tickr.dev/v1/news
+curl -H "X-API-Key: tn_live_your_key" https://api.tradingnews.press/v1/news
 ```
 
 ## Response Format
@@ -42,7 +42,7 @@ Every article returned by the API follows this structure:
 | `sentiment` | string? | Sentiment label (when available) |
 | `urgency` | string | `breaking`, `flash`, or `regular` |
 | `published_at` | string | ISO 8601 publication time |
-| `received_at` | string | ISO 8601 time tickr received the article |
+| `received_at` | string | ISO 8601 time TradingNews received the article |
 
 ## Endpoints
 

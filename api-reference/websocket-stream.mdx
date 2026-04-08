@@ -6,7 +6,7 @@ description: "Real-time article stream over WebSocket"
 ## Connection
 
 ```
-wss://api.tickr.dev/v1/stream?api_key=YOUR_KEY
+wss://api.tradingnews.press/v1/stream?api_key=YOUR_KEY
 ```
 
 API key is passed as a query parameter (not a header) since WebSocket connections don't support custom headers in browsers.
@@ -67,7 +67,7 @@ import websockets
 
 async def main():
     async with websockets.connect(
-        "wss://api.tickr.dev/v1/stream?api_key=YOUR_KEY"
+        "wss://api.tradingnews.press/v1/stream?api_key=YOUR_KEY"
     ) as ws:
         await ws.send(json.dumps({"tickers": ["*"]}))
 
@@ -82,7 +82,7 @@ asyncio.run(main())
 ## Example: JavaScript
 
 ```javascript
-const ws = new WebSocket("wss://api.tickr.dev/v1/stream?api_key=YOUR_KEY");
+const ws = new WebSocket("wss://api.tradingnews.press/v1/stream?api_key=YOUR_KEY");
 
 ws.onopen = () => {
   ws.send(JSON.stringify({ tickers: ["*"] }));

@@ -1,6 +1,6 @@
 ---
 title: "Get Usage"
-api: "GET https://api.tickr.dev/v1/account/usage"
+api: "GET https://api.tradingnews.press/v1/account/usage"
 description: "Check your credit balance and usage stats"
 ---
 
@@ -32,14 +32,14 @@ This endpoint is **free** — it does not cost any credits.
 
 ```bash cURL
 curl -H "X-API-Key: YOUR_KEY" \
-  "https://api.tickr.dev/v1/account/usage"
+  "https://api.tradingnews.press/v1/account/usage"
 ```
 
 ```python Python
 import httpx
 
 resp = httpx.get(
-    "https://api.tickr.dev/v1/account/usage",
+    "https://api.tradingnews.press/v1/account/usage",
     headers={"X-API-Key": "YOUR_KEY"}
 )
 usage = resp.json()

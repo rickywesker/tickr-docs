@@ -1,6 +1,6 @@
 ---
 title: "Get Article by ID"
-api: "GET https://api.tickr.dev/v1/news/{id}"
+api: "GET https://api.tradingnews.press/v1/news/{id}"
 description: "Retrieve a single article by its ULID"
 ---
 
@@ -18,14 +18,14 @@ Returns the full article object, or `404` if not found.
 
 ```bash cURL
 curl -H "X-API-Key: YOUR_KEY" \
-  "https://api.tickr.dev/v1/news/01KNKV33C9DDADR1HRRWGCSA8V"
+  "https://api.tradingnews.press/v1/news/01KNKV33C9DDADR1HRRWGCSA8V"
 ```
 
 ```python Python
 import httpx
 
 resp = httpx.get(
-    "https://api.tickr.dev/v1/news/01KNKV33C9DDADR1HRRWGCSA8V",
+    "https://api.tradingnews.press/v1/news/01KNKV33C9DDADR1HRRWGCSA8V",
     headers={"X-API-Key": "YOUR_KEY"}
 )
 article = resp.json()

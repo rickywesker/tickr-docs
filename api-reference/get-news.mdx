@@ -1,6 +1,6 @@
 ---
 title: "Get News"
-api: "GET https://api.tickr.dev/v1/news"
+api: "GET https://api.tradingnews.press/v1/news"
 description: "Retrieve recent financial news articles"
 ---
 
@@ -36,14 +36,14 @@ description: "Retrieve recent financial news articles"
 
 ```bash cURL
 curl -H "X-API-Key: YOUR_KEY" \
-  "https://api.tickr.dev/v1/news?ticker=AAPL&limit=5&urgency=breaking"
+  "https://api.tradingnews.press/v1/news?ticker=AAPL&limit=5&urgency=breaking"
 ```
 
 ```python Python
 import httpx
 
 resp = httpx.get(
-    "https://api.tickr.dev/v1/news",
+    "https://api.tradingnews.press/v1/news",
     headers={"X-API-Key": "YOUR_KEY"},
     params={"ticker": "AAPL", "limit": 5}
 )

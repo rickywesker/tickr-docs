@@ -8,7 +8,7 @@ description: "Real-time news delivery over WebSocket"
 Connect to the WebSocket endpoint with your API key as a query parameter:
 
 ```
-wss://api.tickr.dev/v1/stream?api_key=YOUR_KEY
+wss://api.tradingnews.press/v1/stream?api_key=YOUR_KEY
 ```
 
 ## Subscription
@@ -60,7 +60,7 @@ async def stream_with_reconnect():
     while True:
         try:
             async with websockets.connect(
-                "wss://api.tickr.dev/v1/stream?api_key=YOUR_KEY"
+                "wss://api.tradingnews.press/v1/stream?api_key=YOUR_KEY"
             ) as ws:
                 await ws.send(json.dumps({"tickers": ["*"]}))
                 backoff = 1  # reset on success

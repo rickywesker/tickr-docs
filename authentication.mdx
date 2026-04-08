@@ -9,19 +9,19 @@ All API requests require an API key passed via the `X-API-Key` header.
 
 ```bash
 curl -H "X-API-Key: tn_live_your_key_here" \
-  "https://api.tickr.dev/v1/news"
+  "https://api.tradingnews.press/v1/news"
 ```
 
 ## Getting Your API Key
 
-1. Sign up at [tickr.dev](https://tickr.dev)
-2. Go to [Dashboard > API Keys](https://tickr.dev/dashboard/keys)
+1. Sign up at [tradingnews.press](https://tradingnews.press)
+2. Go to [Dashboard > API Keys](https://tradingnews.press/dashboard/keys)
 3. Click **Create Key**
 4. Copy the key immediately — it's only shown once
 
 ## Key Format
 
-tickr API keys use a prefix format for easy identification:
+TradingNews API keys use a prefix format for easy identification:
 
 | Prefix | Environment |
 |--------|------------|
@@ -31,7 +31,7 @@ tickr API keys use a prefix format for easy identification:
 ## Security Best Practices
 
 <Warning>
-Never expose your API key in client-side code, public repositories, or browser JavaScript. Always call the tickr API from your backend server.
+Never expose your API key in client-side code, public repositories, or browser JavaScript. Always call the TradingNews API from your backend server.
 </Warning>
 
 - Store keys in environment variables, not in code

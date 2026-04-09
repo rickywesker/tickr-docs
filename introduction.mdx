@@ -11,7 +11,7 @@ TradingNews is a unified trading news API that aggregates breaking financial new
 
 <CardGroup cols={2}>
   <Card title="REST API" icon="code">
-    Query news by ticker, urgency, or time range. Simple GET requests with JSON responses.
+    Query news by urgency or time range. Simple GET requests with JSON responses.
   </Card>
   <Card title="WebSocket Stream" icon="bolt">
     Real-time firehose delivery. Connect and receive all articles as they arrive (Pro plan).
@@ -26,17 +26,13 @@ TradingNews is a unified trading news API that aggregates breaking financial new
 
 ## Data Sources
 
-TradingNews aggregates from curated financial news sources including:
-
-- **FirstSquawk** — real-time market-moving tweets from key financial accounts
-
-New sources are added regularly. All data is normalized into a consistent format regardless of source.
+TradingNews aggregates from multiple curated financial news sources covering US equities, macro events, and global markets. All data is normalized into a consistent format. New sources are added regularly.
 
 ## Quick Example
 
 ```bash
 curl -H "X-API-Key: YOUR_KEY" \
-  "https://api.tradingnews.press/v1/news?ticker=AAPL&limit=5"
+  "https://api.tradingnews.press/v1/news?limit=5"
 ```
 
 ```json
@@ -46,7 +42,6 @@ curl -H "X-API-Key: YOUR_KEY" \
     {
       "id": "01KNKV33C9DDADR1HRRWGCSA8V",
       "content": "Apple announces record Q2 earnings, beats estimates by 12%",
-      "tickers": ["AAPL"],
       "urgency": "breaking",
       "sentiment": null,
       "published_at": "2026-04-07T14:30:00Z",

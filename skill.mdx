@@ -59,12 +59,11 @@ API keys are created in the [TradingNews Dashboard](https://tradingnews.press/da
 
 ```bash
 curl -H "X-API-Key: YOUR_KEY" \
-  "https://api.tradingnews.press/v1/news?limit=5&ticker=AAPL&urgency=breaking"
+  "https://api.tradingnews.press/v1/news?limit=5&urgency=breaking"
 ```
 
 **Query parameters:**
 - `limit` (int, 1-100, default 50) — number of articles
-- `ticker` (string, optional) — filter by ticker symbol (e.g., AAPL)
 - `urgency` (string, optional) — filter: `breaking`, `flash`, or `regular`
 - `since` (ISO datetime, optional) — articles after this time (Starter: 24h max, Pro: 7 days max)
 
@@ -76,7 +75,6 @@ curl -H "X-API-Key: YOUR_KEY" \
     {
       "id": "01KNKV33C9DDADR1HRRWGCSA8V",
       "content": "Fed holds rates steady at 4.25-4.50%, signals patience on cuts",
-      "tickers": ["SPY", "QQQ"],
       "urgency": "breaking",
       "sentiment": null,
       "published_at": "2026-04-07T14:30:00+00:00",
@@ -91,7 +89,6 @@ curl -H "X-API-Key: YOUR_KEY" \
 |-------|------|-------------|
 | `id` | string | Unique ULID, sortable by time |
 | `content` | string | Article text |
-| `tickers` | string[] | Associated stock tickers |
 | `urgency` | string | `breaking`, `flash`, or `regular` |
 | `sentiment` | string? | Sentiment label (when available) |
 | `published_at` | string | ISO 8601 publication time |
@@ -153,7 +150,6 @@ async def stream():
             article = json.loads(message)
             if article["urgency"] == "breaking":
                 print(f"BREAKING: {article['content']}")
-                print(f"Tickers: {article['tickers']}")
 
 asyncio.run(stream())
 ```
@@ -203,8 +199,6 @@ articles = response.json()["articles"]
 
 for article in articles:
     print(f"[{article['urgency']}] {article['content']}")
-    if article["tickers"]:
-        print(f"  Tickers: {', '.join(article['tickers'])}")
 ```
 
 ## Node.js Integration Example
@@ -244,23 +238,13 @@ while True:
     time.sleep(60)  # 1 req/min for Starter
 ```
 
-### Filter by multiple tickers
-The API filters by one ticker at a time. For multiple tickers, make separate calls or fetch all and filter client-side:
-
-```python
-# Client-side filtering
-resp = client.get("/v1/news", params={"limit": 100})
-my_tickers = {"AAPL", "TSLA", "NVDA"}
-relevant = [a for a in resp.json()["articles"] if set(a["tickers"]) & my_tickers]
-```
-
 ### News-driven trading signal
 ```python
 async for msg in ws:
     article = json.loads(msg)
-    if article["urgency"] == "breaking" and "AAPL" in article["tickers"]:
-        # Execute trade logic
-        execute_order("AAPL", signal_from_content(article["content"]))
+    if article["urgency"] == "breaking":
+        # Execute trade logic based on content
+        execute_order(signal_from_content(article["content"]))
 ```
 
 ---

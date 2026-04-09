@@ -26,11 +26,11 @@ client = httpx.Client(
     headers={"X-API-Key": "YOUR_KEY"}
 )
 
-response = client.get("/v1/news", params={"ticker": "AAPL", "limit": 5})
+response = client.get("/v1/news", params={"limit": 5})
 articles = response.json()["articles"]
 
 for article in articles:
-    print(f"[{article['urgency']}] {article['tickers']} {article['content']}")
+    print(f"[{article['urgency']}] {article['content']}")
 ```
 
 ```javascript Node.js
@@ -40,7 +40,7 @@ const response = await fetch("https://api.tradingnews.press/v1/news?limit=5", {
 
 const { articles } = await response.json();
 articles.forEach(a => {
-  console.log(`[${a.urgency}] ${a.tickers.join(",")} ${a.content}`);
+  console.log(`[${a.urgency}] ${a.content}`);
 });
 ```
 

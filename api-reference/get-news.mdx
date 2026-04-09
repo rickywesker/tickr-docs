@@ -6,10 +6,6 @@ description: "Retrieve recent financial news articles"
 
 ## Query Parameters
 
-<ParamField query="ticker" type="string" optional>
-  Filter by stock ticker symbol (e.g., `AAPL`, `TSLA`). Case-insensitive.
-</ParamField>
-
 <ParamField query="limit" type="integer" default="50" optional>
   Number of articles to return. Min: 1, Max: 100.
 </ParamField>
@@ -36,7 +32,7 @@ description: "Retrieve recent financial news articles"
 
 ```bash cURL
 curl -H "X-API-Key: YOUR_KEY" \
-  "https://api.tradingnews.press/v1/news?ticker=AAPL&limit=5&urgency=breaking"
+  "https://api.tradingnews.press/v1/news?limit=5&urgency=breaking"
 ```
 
 ```python Python
@@ -45,7 +41,7 @@ import httpx
 resp = httpx.get(
     "https://api.tradingnews.press/v1/news",
     headers={"X-API-Key": "YOUR_KEY"},
-    params={"ticker": "AAPL", "limit": 5}
+    params={"limit": 5}
 )
 articles = resp.json()["articles"]
 ```
@@ -61,7 +57,6 @@ articles = resp.json()["articles"]
     {
       "id": "01KNKV33C9DDADR1HRRWGCSA8V",
       "content": "Apple announces record Q2 earnings, beats estimates by 12%",
-      "tickers": ["AAPL"],
       "urgency": "breaking",
       "sentiment": null,
       "published_at": "2026-04-07T14:30:00+00:00",

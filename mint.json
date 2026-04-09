@@ -49,10 +49,13 @@
         "api-reference/websocket-stream",
         "api-reference/get-usage"
       ]
+    },
+    {
+      "group": "Integrations",
+      "pages": ["skill"]
     }
   ],
   "footerSocials": {
-    "twitter": "https://twitter.com/tradingnewsdev",
-    "github": "https://github.com/rickywesker/tradingnews"
+    "twitter": "https://twitter.com/tradingnewsdev"
   }
 }

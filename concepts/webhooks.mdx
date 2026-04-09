@@ -11,19 +11,17 @@ Connect to the WebSocket endpoint with your API key as a query parameter:
 wss://api.tradingnews.press/v1/stream?api_key=YOUR_KEY
 ```
 
-## Subscription
+<Note>
+WebSocket streaming is available on the **Pro plan** only ($50/mo). Starter plan users will receive a connection rejection.
+</Note>
 
-After connecting, send a JSON message to subscribe to specific tickers:
+## Firehose
 
-```json
-// Subscribe to specific tickers
-{ "tickers": ["AAPL", "TSLA", "NVDA"] }
+The WebSocket is a **firehose** — once connected, all articles are pushed to you automatically as they arrive. There is no subscription step and no ticker filtering. You receive everything.
 
-// Subscribe to everything (firehose)
-{ "tickers": ["*"] }
-```
+## Connection Limit
 
-You must send this subscription message within **30 seconds** of connecting, or the connection will be closed.
+Each user is limited to **1 concurrent WebSocket connection**. If you attempt to open a second connection, it will be rejected with close code `1008`. Close your existing connection before opening a new one.
 
 ## Message Format
 
@@ -32,19 +30,14 @@ Each message is a JSON object matching the article schema:
 ```json
 {
   "id": "01KNKV33C9DDADR1HRRWGCSA8V",
-  "source": "firstsquawk",
-  "title": "BREAKING: Fed announces emergency rate cut",
+  "content": "BREAKING: Fed announces emergency rate cut",
   "tickers": ["SPY", "QQQ"],
   "urgency": "breaking",
-  "content_type": "tweet",
-  "published_at": "2026-04-07T14:30:00Z",
-  "received_at": "2026-04-07T14:30:02Z"
+  "sentiment": null,
+  "published_at": "2026-04-07T14:30:00+00:00",
+  "received_at": "2026-04-07T14:30:02.123456+00:00"
 }
 ```
-
-## Credits
-
-Each message pushed to your connection costs **1 credit**. If your credits are exhausted, the connection closes with code `1008`.
 
 ## Reconnection
 
@@ -62,7 +55,6 @@ async def stream_with_reconnect():
             async with websockets.connect(
                 "wss://api.tradingnews.press/v1/stream?api_key=YOUR_KEY"
             ) as ws:
-                await ws.send(json.dumps({"tickers": ["*"]}))
                 backoff = 1  # reset on success
                 async for msg in ws:
                     article = json.loads(msg)
@@ -72,6 +64,10 @@ async def stream_with_reconnect():
             backoff = min(backoff * 2, 60)
 ```
 
-## Filtering
+## Disconnection
 
-Only articles matching your subscribed tickers are sent. Ticker matching is case-insensitive. If you subscribe to `["*"]`, you receive all articles regardless of ticker.
+The connection closes when:
+- Your plan is not Pro (close code `1008`)
+- You already have an active connection (close code `1008`)
+- Invalid API key (close code `1008`)
+- Server maintenance (implement auto-reconnect)

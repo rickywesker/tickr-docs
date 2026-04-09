@@ -30,7 +30,7 @@ response = client.get("/v1/news", params={"ticker": "AAPL", "limit": 5})
 articles = response.json()["articles"]
 
 for article in articles:
-    print(f"[{article['urgency']}] {article['tickers']} {article['title']}")
+    print(f"[{article['urgency']}] {article['tickers']} {article['content']}")
 ```
 
 ```javascript Node.js
@@ -40,7 +40,7 @@ const response = await fetch("https://api.tradingnews.press/v1/news?limit=5", {
 
 const { articles } = await response.json();
 articles.forEach(a => {
-  console.log(`[${a.urgency}] ${a.tickers.join(",")} ${a.title}`);
+  console.log(`[${a.urgency}] ${a.tickers.join(",")} ${a.content}`);
 });
 ```
 
@@ -48,7 +48,7 @@ articles.forEach(a => {
 
 ## 3. Stream real-time news
 
-Connect via WebSocket for live updates:
+Connect via WebSocket for live updates (Pro plan only):
 
 <CodeGroup>
 
@@ -60,12 +60,10 @@ import websockets
 async def stream():
     uri = "wss://api.tradingnews.press/v1/stream?api_key=YOUR_KEY"
     async with websockets.connect(uri) as ws:
-        # Subscribe to specific tickers (or ["*"] for all)
-        await ws.send(json.dumps({"tickers": ["AAPL", "TSLA", "NVDA"]}))
-
+        # Firehose — all articles are pushed automatically
         async for message in ws:
             article = json.loads(message)
-            print(f"[{article['urgency']}] {article['title']}")
+            print(f"[{article['urgency']}] {article['content']}")
 
 asyncio.run(stream())
 ```
@@ -73,13 +71,10 @@ asyncio.run(stream())
 ```javascript Node.js
 const ws = new WebSocket("wss://api.tradingnews.press/v1/stream?api_key=YOUR_KEY");
 
-ws.onopen = () => {
-  ws.send(JSON.stringify({ tickers: ["AAPL", "TSLA", "NVDA"] }));
-};
-
+// Firehose — all articles are pushed automatically
 ws.onmessage = (event) => {
   const article = JSON.parse(event.data);
-  console.log(`[${article.urgency}] ${article.title}`);
+  console.log(`[${article.urgency}] ${article.content}`);
 };
 ```
 
@@ -94,10 +89,8 @@ curl -H "X-API-Key: YOUR_KEY" \
 
 ```json
 {
-  "credits_remaining": 4995,
-  "credits_used_this_period": 5,
   "tier": "starter",
-  "rate_limit": 30,
+  "rate_limit": 1,
   "period_end": "2026-05-07T00:00:00Z"
 }
 ```
@@ -106,4 +99,4 @@ curl -H "X-API-Key: YOUR_KEY" \
 
 - [Authentication](/authentication) — API key best practices
 - [API Reference](/api-reference/overview) — Full endpoint documentation
-- [Credits & Pricing](/concepts/credits) — How billing works
+- [Rate Limits](/concepts/rate-limits) — Request limits per plan

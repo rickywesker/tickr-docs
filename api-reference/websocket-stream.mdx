@@ -1,6 +1,6 @@
 ---
 title: "WebSocket Stream"
-description: "Real-time article stream over WebSocket"
+description: "Real-time article firehose over WebSocket (Pro plan only)"
 ---
 
 ## Connection
@@ -11,51 +11,42 @@ wss://api.tradingnews.press/v1/stream?api_key=YOUR_KEY
 
 API key is passed as a query parameter (not a header) since WebSocket connections don't support custom headers in browsers.
 
+<Note>
+WebSocket streaming requires the **Pro plan** ($50/mo). Starter plan connections are rejected with close code `1008`.
+</Note>
+
 ## Protocol
 
 ### 1. Connect
 
-Open a WebSocket connection to the URL above.
+Open a WebSocket connection to the URL above. No subscription step is needed — the server immediately begins pushing all articles as they arrive (firehose).
 
-### 2. Subscribe (within 30 seconds)
-
-Send a JSON message specifying which tickers to receive:
-
-```json
-// Specific tickers
-{ "tickers": ["AAPL", "TSLA", "NVDA"] }
-
-// Everything
-{ "tickers": ["*"] }
-```
-
-### 3. Receive articles
+### 2. Receive articles
 
 The server pushes JSON articles as they arrive:
 
 ```json
 {
   "id": "01KNKV33C9DDADR1HRRWGCSA8V",
-  "source": "firstsquawk",
-  "title": "BREAKING: MISSILES TARGET US FACILITY NEAR BAGHDAD",
+  "content": "BREAKING: MISSILES TARGET US FACILITY NEAR BAGHDAD",
   "tickers": [],
   "urgency": "breaking",
-  "content_type": "tweet",
-  "published_at": "2026-04-07T20:22:42Z",
-  "received_at": "2026-04-07T20:22:43Z"
+  "sentiment": null,
+  "published_at": "2026-04-07T20:22:42+00:00",
+  "received_at": "2026-04-07T20:22:43.123456+00:00"
 }
 ```
 
-## Cost
+## Connection Limit
 
-Each message pushed costs **1 credit**. Connection itself is free.
+Each user is limited to **1 concurrent WebSocket connection**. Attempting a second connection returns close code `1008` with reason "Only 1 WebSocket connection allowed."
 
 ## Disconnection
 
 The connection closes when:
-- Credits are exhausted (close code `1008`)
-- No subscription sent within 30 seconds (close code `1008`)
-- Invalid API key (close code `1008`)
+- Your plan is not Pro (close code `1008`)
+- You already have an active connection (close code `1008`)
+- Invalid or inactive API key (close code `1008`)
 - Server maintenance (implement auto-reconnect)
 
 ## Example: Python
@@ -69,12 +60,11 @@ async def main():
     async with websockets.connect(
         "wss://api.tradingnews.press/v1/stream?api_key=YOUR_KEY"
     ) as ws:
-        await ws.send(json.dumps({"tickers": ["*"]}))
-
+        # Firehose — all articles pushed automatically
         async for message in ws:
             article = json.loads(message)
             if article["urgency"] == "breaking":
-                print(f"ALERT: {article['title']}")
+                print(f"ALERT: {article['content']}")
 
 asyncio.run(main())
 ```
@@ -84,19 +74,16 @@ asyncio.run(main())
 ```javascript
 const ws = new WebSocket("wss://api.tradingnews.press/v1/stream?api_key=YOUR_KEY");
 
-ws.onopen = () => {
-  ws.send(JSON.stringify({ tickers: ["*"] }));
-};
-
+// Firehose — all articles pushed automatically
 ws.onmessage = ({ data }) => {
   const article = JSON.parse(data);
   if (article.urgency === "breaking") {
-    console.log(`ALERT: ${article.title}`);
+    console.log(`ALERT: ${article.content}`);
   }
 };
 
 ws.onclose = ({ code }) => {
-  if (code === 1008) console.log("Credits exhausted or auth failed");
+  if (code === 1008) console.log("Auth failed or not Pro plan");
   // Implement reconnection logic
 };
 ```

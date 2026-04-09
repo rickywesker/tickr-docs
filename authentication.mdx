@@ -44,15 +44,15 @@ Never expose your API key in client-side code, public repositories, or browser J
 | Status | Meaning |
 |--------|---------|
 | `401` | Invalid or missing API key |
-| `403` | Key is inactive or insufficient credits |
+| `403` | Key is inactive or access blocked |
 | `429` | Rate limit exceeded |
 
 ```json
 // 401 — Invalid key
 { "detail": "Invalid API key" }
 
-// 403 — No credits
-{ "detail": "Insufficient credits" }
+// 403 — Inactive key
+{ "detail": "API key is inactive" }
 
 // 429 — Rate limited
 { "detail": "Rate limit exceeded. Try again shortly." }

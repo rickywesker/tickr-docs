@@ -9,10 +9,8 @@ Each API key has a per-minute request limit based on your plan tier. Limits are 
 
 | Plan | Requests per Minute |
 |------|-------------------|
-| Free | 10 |
-| Starter | 30 |
-| Pro | 120 |
-| Power | 500 |
+| Starter | 1 |
+| Pro | 30 |
 
 ## Rate Limit Headers
 
@@ -25,7 +23,7 @@ When you're rate limited, the API returns `429 Too Many Requests`:
 ## Best Practices
 
 - **Cache responses** — if you're polling `/v1/news` frequently, cache results for a few seconds
-- **Use WebSocket** for real-time data instead of polling the REST API
+- **Use WebSocket** for real-time data instead of polling the REST API (Pro plan)
 - **Spread requests** — avoid bursting all requests in the first second of each minute
 
 ## IP-Based Protection

@@ -14,13 +14,13 @@ TradingNews is a unified trading news API that aggregates breaking financial new
     Query news by ticker, urgency, or time range. Simple GET requests with JSON responses.
   </Card>
   <Card title="WebSocket Stream" icon="bolt">
-    Real-time push delivery. Subscribe to specific tickers or receive everything.
+    Real-time firehose delivery. Connect and receive all articles as they arrive (Pro plan).
   </Card>
   <Card title="Priority Scoring" icon="arrow-up-right-dots">
     Every article tagged with urgency level — breaking, flash, or regular. Filter for what matters.
   </Card>
-  <Card title="Credit-Based Pricing" icon="coins">
-    Pay for what you use. Each API call costs 1 credit. Monthly plans include credits with affordable overage.
+  <Card title="Simple Pricing" icon="gauge-high">
+    Two paid tiers with rate-limit-based pricing. Starter at $20/mo, Pro at $50/mo with WebSocket access.
   </Card>
 </CardGroup>
 
@@ -29,7 +29,6 @@ TradingNews is a unified trading news API that aggregates breaking financial new
 TradingNews aggregates from curated financial news sources including:
 
 - **FirstSquawk** — real-time market-moving tweets from key financial accounts
-- **SeekingAlpha** — market news headlines with ticker tagging and price change data
 
 New sources are added regularly. All data is normalized into a consistent format regardless of source.
 
@@ -46,9 +45,10 @@ curl -H "X-API-Key: YOUR_KEY" \
   "articles": [
     {
       "id": "01KNKV33C9DDADR1HRRWGCSA8V",
-      "title": "Apple announces record Q2 earnings, beats estimates by 12%",
+      "content": "Apple announces record Q2 earnings, beats estimates by 12%",
       "tickers": ["AAPL"],
       "urgency": "breaking",
+      "sentiment": null,
       "published_at": "2026-04-07T14:30:00Z",
       "received_at": "2026-04-07T14:30:02Z"
     }

@@ -54,8 +54,5 @@
       "group": "Integrations",
       "pages": ["skill"]
     }
-  ],
-  "footerSocials": {
-    "twitter": "https://twitter.com/tradingnewsdev"
-  }
+  ]
 }

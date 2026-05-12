@@ -1,0 +1,81 @@
+---
+title: "Search News"
+api: "GET https://api.tradingnews.press/v1/news/search"
+description: "Semantic search over the article archive"
+---
+
+<Note>
+  Available on the **Max** plan only. Requests from Starter or Pro keys return `403`.
+</Note>
+
+## Query Parameters
+
+<ParamField query="q" type="string" required>
+  Natural-language query. 2 to 500 characters.
+</ParamField>
+
+<ParamField query="limit" type="integer" default="20" optional>
+  Number of articles to return. Min: 1, Max: 100.
+</ParamField>
+
+## Response
+
+<ResponseField name="count" type="integer">
+  Number of articles returned.
+</ResponseField>
+
+<ResponseField name="query" type="string">
+  The original query string, echoed back.
+</ResponseField>
+
+<ResponseField name="articles" type="Article[]">
+  Articles ranked by semantic relevance to the query. Same schema as `/v1/news`, with per-ticker sentiment included.
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl -H "X-API-Key: YOUR_KEY" \
+  "https://api.tradingnews.press/v1/news/search?q=Fed%20interest%20rate%20decision&limit=5"
+```
+
+```python Python
+import httpx
+
+resp = httpx.get(
+    "https://api.tradingnews.press/v1/news/search",
+    headers={"X-API-Key": "YOUR_KEY"},
+    params={"q": "Fed interest rate decision", "limit": 5},
+)
+articles = resp.json()["articles"]
+```
+
+</RequestExample>
+
+<ResponseExample>
+
+```json 200
+{
+  "count": 2,
+  "query": "Fed interest rate decision",
+  "articles": [
+    {
+      "id": "01KP8JCVDPYSS17HNRZPXNAZCP",
+      "content": "Federal Reserve official Hammack stated that there are risks regarding the direction of interest rate targets...",
+      "urgency": "regular",
+      "sentiment": null,
+      "published_at": "2026-04-15T12:38:07+00:00",
+      "received_at": "2026-04-15T12:38:28.022468+00:00",
+      "tickers": []
+    }
+  ]
+}
+```
+
+```json 403
+{
+  "detail": "Semantic search is available on the Max plan only."
+}
+```
+
+</ResponseExample>

@@ -46,6 +46,7 @@
         "api-reference/overview",
         "api-reference/get-news",
         "api-reference/get-news-by-id",
+        "api-reference/search-news",
         "api-reference/websocket-stream",
         "api-reference/get-usage"
       ]

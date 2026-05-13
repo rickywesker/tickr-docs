@@ -9,7 +9,12 @@ This endpoint is **free** — it does not count against your rate limit.
 ## Response
 
 <ResponseField name="tier" type="string">
-  Your current plan: `starter` or `pro`.
+  Your current plan. One of:
+  - `starter` — $20/mo, 1 req/min
+  - `pro` — $50/mo, 30 req/min, WebSocket access
+  - `max` — Pro features plus semantic search and per-ticker sentiment, 60 req/min
+  - `expired` — 7-day grace window after cancellation, throttled to 1 req/min
+  - `free` — never-subscribed key, blocked from API access
 </ResponseField>
 
 <ResponseField name="rate_limit" type="integer">
@@ -17,7 +22,7 @@ This endpoint is **free** — it does not count against your rate limit.
 </ResponseField>
 
 <ResponseField name="period_end" type="string?">
-  ISO 8601 datetime when the current billing period ends. `null` if no active subscription.
+  ISO 8601 datetime when the current billing period ends (or when a trial converts to paid). `null` if no active subscription.
 </ResponseField>
 
 <RequestExample>

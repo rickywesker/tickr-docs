@@ -29,7 +29,7 @@ description: "Semantic search over the article archive"
 </ResponseField>
 
 <ResponseField name="articles" type="Article[]">
-  Articles ranked by semantic relevance to the query. Same schema as `/v1/news`, with per-ticker sentiment included.
+  Articles ranked by semantic relevance to the query. Same schema as `/v1/news`. Because semantic search is Max-only, each article includes a `tickers` array with per-ticker sentiment (e.g. `[{"ticker": "AAPL", "sentiment": "positive"}]`); the array is empty when no tickers were detected.
 </ResponseField>
 
 <RequestExample>
@@ -67,6 +67,17 @@ articles = resp.json()["articles"]
       "published_at": "2026-04-15T12:38:07+00:00",
       "received_at": "2026-04-15T12:38:28.022468+00:00",
       "tickers": []
+    },
+    {
+      "id": "01KP8JCVDPYSS17HNRZPXNAZCQ",
+      "content": "Bank of America raises terminal rate forecast after stronger-than-expected payrolls print.",
+      "urgency": "flash",
+      "sentiment": "hawkish",
+      "published_at": "2026-04-15T12:35:00+00:00",
+      "received_at": "2026-04-15T12:35:18.114002+00:00",
+      "tickers": [
+        {"ticker": "BAC", "sentiment": "neutral"}
+      ]
     }
   ]
 }
@@ -75,6 +86,12 @@ articles = resp.json()["articles"]
 ```json 403
 {
   "detail": "Semantic search is available on the Max plan only."
+}
+```
+
+```json 503
+{
+  "detail": "Embedding service temporarily unavailable; please retry shortly."
 }
 ```
 

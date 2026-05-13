@@ -9,25 +9,36 @@ TradingNews uses rate-limit-based pricing. Your subscription tier determines how
 
 ## Plans
 
-| Plan | Price | Rate Limit | WebSocket |
-|------|-------|-----------|-----------|
-| **Starter** | $20/mo | 1 req/min | No |
-| **Pro** | $50/mo | 30 req/min | Yes (1 connection) |
+| Plan | Price | Rate Limit | WebSocket | Semantic Search | Per-Ticker Sentiment |
+|------|-------|-----------|-----------|-----------------|----------------------|
+| **Starter** | $20/mo | 1 req/min | No | No | No |
+| **Pro** | $50/mo | 30 req/min | Yes (1 connection) | No | No |
+| **Max** | Contact for pricing | 60 req/min | Yes (1 connection) | Yes (`/v1/news/search`) | Yes (`tickers` field) |
 
 There is no free tier. A paid subscription is required to use the API.
 
+## Free Trial
+
+First-time subscribers can start a **3-day free trial** on Starter or Pro. A card is required at sign-up but is not charged until the trial converts. The trial flag can only be used once per user — switching plans after the trial requires a paid subscription. Max does not offer a free trial.
+
 ## What's Included
 
-Both plans include:
+All plans include:
 
 - Unlimited REST API requests (within your rate limit)
 - Full access to all news data and filters
-- Ticker, urgency, and time-range filtering
+- Urgency and time-range filtering (Starter is capped to the last 24h of articles; Pro and Max can reach back 7 days)
 
-**Pro plan** additionally includes:
+**Pro** additionally includes:
 
 - WebSocket firehose streaming (real-time push delivery)
 - 1 concurrent WebSocket connection
+
+**Max** additionally includes:
+
+- Semantic search over the article archive (`GET /v1/news/search`)
+- Per-ticker sentiment on every REST and WebSocket response (`tickers` field)
+- 60 req/min rate limit
 
 ## Checking Your Plan
 

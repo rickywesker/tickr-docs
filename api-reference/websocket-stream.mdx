@@ -1,6 +1,6 @@
 ---
 title: "WebSocket Stream"
-description: "Real-time article firehose over WebSocket (Pro plan only)"
+description: "Real-time article firehose over WebSocket (Pro and Max plans)"
 ---
 
 ## Connection
@@ -12,7 +12,7 @@ wss://api.tradingnews.press/v1/stream?api_key=YOUR_KEY
 API key is passed as a query parameter (not a header) since WebSocket connections don't support custom headers in browsers.
 
 <Note>
-WebSocket streaming requires the **Pro plan** ($50/mo). Starter plan connections are rejected with close code `1008`.
+WebSocket streaming requires the **Pro** ($50/mo) or **Max** plan. Starter plan connections are rejected with close code `1008`.
 </Note>
 
 ## Protocol
@@ -25,7 +25,7 @@ Open a WebSocket connection to the URL above. No subscription step is needed —
 
 The server pushes JSON articles as they arrive:
 
-```json
+```json Pro
 {
   "id": "01KNKV33C9DDADR1HRRWGCSA8V",
   "content": "BREAKING: MISSILES TARGET US FACILITY NEAR BAGHDAD",
@@ -36,6 +36,22 @@ The server pushes JSON articles as they arrive:
 }
 ```
 
+```json Max
+{
+  "id": "01KNKV33C9DDADR1HRRWGCSA8V",
+  "content": "Apple announces record Q2 earnings, beats estimates by 12%",
+  "urgency": "breaking",
+  "sentiment": null,
+  "published_at": "2026-04-07T14:30:00+00:00",
+  "received_at": "2026-04-07T14:30:02.123456+00:00",
+  "tickers": [
+    {"ticker": "AAPL", "sentiment": "positive"}
+  ]
+}
+```
+
+Max-plan streams add a `tickers` array on each message (empty when no tickers are detected). Pro streams omit the field entirely.
+
 ## Connection Limit
 
 Each user is limited to **1 concurrent WebSocket connection**. Attempting a second connection returns close code `1008` with reason "Only 1 WebSocket connection allowed."
@@ -43,9 +59,10 @@ Each user is limited to **1 concurrent WebSocket connection**. Attempting a seco
 ## Disconnection
 
 The connection closes when:
-- Your plan is not Pro (close code `1008`)
+- Your plan is not Pro or Max (close code `1008`)
 - You already have an active connection (close code `1008`)
 - Invalid or inactive API key (close code `1008`)
+- Your subscription expires mid-stream — the server re-checks every 5 minutes (close code `1008`)
 - Server maintenance (implement auto-reconnect)
 
 ## Example: Python
@@ -82,7 +99,7 @@ ws.onmessage = ({ data }) => {
 };
 
 ws.onclose = ({ code }) => {
-  if (code === 1008) console.log("Auth failed or not Pro plan");
+  if (code === 1008) console.log("Auth failed or plan does not include streaming");
   // Implement reconnection logic
 };
 ```

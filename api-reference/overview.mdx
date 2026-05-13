@@ -37,13 +37,13 @@ Every article returned by the API follows this structure:
 | `sentiment` | string? | Sentiment label (when available) |
 | `published_at` | string? | ISO 8601 publication time |
 | `received_at` | string | ISO 8601 time TradingNews received the article |
+| `tickers` | object[] | **Max plan only.** Per-ticker sentiment for the article, e.g. `[{"ticker": "AAPL", "sentiment": "positive"}]`. Empty array when no tickers are detected. Absent for Starter/Pro responses. |
 
 ## Endpoints
 
 | Method | Path | Description | Access |
 |--------|------|-------------|--------|
-| GET | `/v1/news` | List recent articles | Starter + Pro |
-| GET | `/v1/news/{id}` | Get single article | Starter + Pro |
+| GET | `/v1/news` | List recent articles | Starter, Pro, Max |
 | GET | `/v1/news/search` | Semantic search over archive | Max only |
-| WS | `/v1/stream` | Real-time firehose stream | Pro only |
-| GET | `/v1/account/usage` | Check plan and rate limit | Starter + Pro |
+| WS | `/v1/stream` | Real-time firehose stream | Pro, Max |
+| GET | `/v1/account/usage` | Check plan and rate limit | All tiers |

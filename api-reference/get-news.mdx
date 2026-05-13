@@ -25,8 +25,12 @@ description: "Retrieve recent financial news articles"
 </ResponseField>
 
 <ResponseField name="articles" type="Article[]">
-  Array of article objects.
+  Array of article objects. Max-plan responses additionally include a `tickers` array on each article (per-ticker sentiment, e.g. `[{"ticker": "AAPL", "sentiment": "positive"}]`). Starter and Pro responses omit the field.
 </ResponseField>
+
+<Note>
+  Starter keys can query articles received in the last 24 hours; Pro and Max keys can query the last 7 days. Older `since` values are silently clamped to the allowed window.
+</Note>
 
 <RequestExample>
 
@@ -50,9 +54,9 @@ articles = resp.json()["articles"]
 
 <ResponseExample>
 
-```json 200
+```json 200 (Starter / Pro)
 {
-  "count": 2,
+  "count": 1,
   "articles": [
     {
       "id": "01KNKV33C9DDADR1HRRWGCSA8V",
@@ -61,6 +65,25 @@ articles = resp.json()["articles"]
       "sentiment": null,
       "published_at": "2026-04-07T14:30:00+00:00",
       "received_at": "2026-04-07T14:30:02.123456+00:00"
+    }
+  ]
+}
+```
+
+```json 200 (Max)
+{
+  "count": 1,
+  "articles": [
+    {
+      "id": "01KNKV33C9DDADR1HRRWGCSA8V",
+      "content": "Apple announces record Q2 earnings, beats estimates by 12%",
+      "urgency": "breaking",
+      "sentiment": null,
+      "published_at": "2026-04-07T14:30:00+00:00",
+      "received_at": "2026-04-07T14:30:02.123456+00:00",
+      "tickers": [
+        {"ticker": "AAPL", "sentiment": "positive"}
+      ]
     }
   ]
 }

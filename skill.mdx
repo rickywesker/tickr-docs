@@ -46,10 +46,13 @@ API keys are created in the [TradingNews Dashboard](https://tradingnews.press/da
 
 ## Plans
 
-| Plan | Price | REST Rate Limit | WebSocket |
-|------|-------|----------------|-----------|
-| Starter | $20/mo | 1 req/min | No |
-| Pro | $50/mo | 30 req/min | Yes (1 connection) |
+| Plan | Price | REST Rate Limit | WebSocket | Semantic Search | Per-Ticker Sentiment |
+|------|-------|----------------|-----------|-----------------|----------------------|
+| Starter | $20/mo | 1 req/min | No | No | No |
+| Pro | $50/mo | 30 req/min | Yes (1 connection) | No | No |
+| Max | Contact | 60 req/min | Yes (1 connection) | Yes | Yes |
+
+First-time subscribers get a 3-day free trial on Starter or Pro (Max excluded).
 
 ---
 
@@ -93,15 +96,41 @@ curl -H "X-API-Key: YOUR_KEY" \
 | `sentiment` | string? | Sentiment label (when available) |
 | `published_at` | string | ISO 8601 publication time |
 | `received_at` | string | ISO 8601 time API received it |
+| `tickers` | object[] | **Max only.** Per-ticker sentiment, e.g. `[{"ticker": "AAPL", "sentiment": "positive"}]`. Empty array when no tickers detected. Absent on Starter/Pro. |
 
-### GET /v1/news/{id} — Single article
+`since` lookback is capped at 24h for Starter and 7 days for Pro/Max.
+
+### GET /v1/news/search — Semantic search (Max only)
 
 ```bash
 curl -H "X-API-Key: YOUR_KEY" \
-  "https://api.tradingnews.press/v1/news/01KNKV33C9DDADR1HRRWGCSA8V"
+  "https://api.tradingnews.press/v1/news/search?q=Fed%20rate%20decision&limit=5"
 ```
 
-Returns 404 if not found (no charge for 404s).
+**Query parameters:**
+- `q` (string, 2-500 chars, required) — natural-language query
+- `limit` (int, 1-100, default 20)
+
+**Response:**
+```json
+{
+  "count": 1,
+  "query": "Fed rate decision",
+  "articles": [
+    {
+      "id": "01KP8JCVDPYSS17HNRZPXNAZCP",
+      "content": "Federal Reserve official Hammack ...",
+      "urgency": "regular",
+      "sentiment": null,
+      "published_at": "2026-04-15T12:38:07+00:00",
+      "received_at": "2026-04-15T12:38:28+00:00",
+      "tickers": []
+    }
+  ]
+}
+```
+
+Starter and Pro keys receive `403`. Returns `503` if the embedding service is temporarily unavailable — retry with backoff.
 
 ### GET /v1/account/usage — Check your plan
 
@@ -119,11 +148,11 @@ curl -H "X-API-Key: YOUR_KEY" \
 }
 ```
 
-This endpoint is free (does not count toward rate limit).
+`tier` is one of `starter`, `pro`, `max`, `expired` (7-day grace at 1 req/min after cancellation), or `free` (never subscribed — blocked from API access). This endpoint is free (does not count toward rate limit).
 
 ---
 
-## WebSocket Streaming (Pro only)
+## WebSocket Streaming (Pro and Max)
 
 Connect for real-time push delivery of all articles as they arrive:
 
@@ -132,9 +161,11 @@ wss://api.tradingnews.press/v1/stream?api_key=YOUR_KEY
 ```
 
 - **No subscription message needed** — connect and receive (firehose)
-- **Pro plan required** — Starter keys get rejected (code 1008)
+- **Pro or Max plan required** — Starter keys get rejected (code 1008)
 - **1 connection per user** — second connection is rejected
 - Articles arrive as JSON, same format as REST
+- **Max streams** include the `tickers` field on each message; Pro streams omit it
+- Subscription status is re-checked every 5 minutes — expired subs are dropped with code 1008
 
 ### Python example
 

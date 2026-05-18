@@ -1,3 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 32">
-  <text x="0" y="24" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="800" fill="#000000" letter-spacing="-0.5">TradingNews</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 32" fill="none">
+  <g transform="scale(0.0625)">
+    <g stroke="#2B2A26" stroke-width="22" stroke-linecap="round">
+      <line x1="82" y1="208" x2="210" y2="208"/>
+      <line x1="28" y1="268" x2="172" y2="268"/>
+      <line x1="92" y1="328" x2="248" y2="328"/>
+    </g>
+    <path fill="#2B2A26" d="M379 41L205 208H333L232 469L480 256H361L439 41H379Z"/>
+    <path fill="#2B2A26" d="M430 376L430 454L516 454L598 387L598 254L558 254L558 356L515 394L515 307L474 307L474 430L430 454Z"/>
+  </g>
+  <text x="48" y="24" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="22" font-weight="800" fill="#2B2A26" letter-spacing="-0.5">TradingNews</text>
 </svg>

@@ -1,12 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 32" fill="none">
-  <g transform="scale(0.0625)">
-    <g stroke="#2B2A26" stroke-width="22" stroke-linecap="round">
-      <line x1="82" y1="208" x2="210" y2="208"/>
-      <line x1="28" y1="268" x2="172" y2="268"/>
-      <line x1="92" y1="328" x2="248" y2="328"/>
-    </g>
-    <path fill="#2B2A26" d="M379 41L205 208H333L232 469L480 256H361L439 41H379Z"/>
-    <path fill="#2B2A26" d="M430 376L430 454L516 454L598 387L598 254L558 254L558 356L515 394L515 307L474 307L474 430L430 454Z"/>
-  </g>
-  <text x="48" y="24" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="22" font-weight="800" fill="#2B2A26" letter-spacing="-0.5">TradingNews</text>
+  <svg x="0" y="0" width="32" height="32" viewBox="0 0 508 508">
+    <rect width="127" height="508" fill="#7A9474"/>
+    <rect x="381" width="127" height="508" fill="#7A9474"/>
+    <rect x="137.16" y="20.32" width="20.32" height="294.64" fill="#7A9474" fill-opacity="0.3"/>
+    <rect x="167.64" y="254" width="20.32" height="213.36" fill="#7A9474"/>
+    <rect x="198.12" y="213.36" width="20.32" height="152.4" fill="#7A9474"/>
+    <rect x="228.6" y="152.4" width="20.32" height="172.72" fill="#7A9474"/>
+    <rect x="259.08" y="182.88" width="20.32" height="213.36" fill="#7A9474" fill-opacity="0.3"/>
+    <rect x="289.56" y="91.44" width="20.32" height="213.36" fill="#7A9474"/>
+    <rect x="320.04" y="40.64" width="20.32" height="213.36" fill="#7A9474"/>
+    <rect x="350.52" y="106.68" width="20.32" height="350.52" fill="#7A9474" fill-opacity="0.3"/>
+  </svg>
+  <text x="40" y="24" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="22" font-weight="800" fill="#2B2A26" letter-spacing="-0.5">TradingNews</text>
 </svg>

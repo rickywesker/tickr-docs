@@ -9,11 +9,11 @@ TradingNews uses rate-limit-based pricing. Your subscription tier determines how
 
 ## Plans
 
-| Plan | Price | Rate Limit | WebSocket | Semantic Search | Per-Ticker Sentiment |
-|------|-------|-----------|-----------|-----------------|----------------------|
-| **Starter** | $20/mo | 1 req/min | No | No | No |
-| **Pro** | $50/mo | 30 req/min | Yes | No | No |
-| **Max** | $100/mo | 60 req/min | Yes | Yes | Yes |
+| Plan | Price | Rate Limit | WebSocket | Natural-language Search | Per-Ticker Sentiment | News Insights |
+|------|-------|-----------|-----------|-------------------------|----------------------|---------------|
+| **Starter** | $20/mo | 1 req/min | No | No | No | No |
+| **Pro** | $50/mo | 30 req/min | Yes | No | No | No |
+| **Max** | $100/mo | 60 req/min | Yes | Yes | Yes | Yes (opt-in) |
 
 There is no free tier. A paid subscription is required to use the API.
 
@@ -32,7 +32,7 @@ Every plan can be billed **monthly or annually**. Annual billing saves 30% versu
 All plans include:
 
 - Unlimited REST API requests (within your rate limit)
-- Full access to all news data and filters
+- Full access to news data within the plan lookback window
 - Urgency and time-range filtering (Starter is capped to the last 24h of articles; Pro and Max can reach back 7 days)
 
 **Pro** additionally includes:
@@ -42,8 +42,9 @@ All plans include:
 
 **Max** additionally includes:
 
-- Semantic search over the article archive (`GET /v1/news/search`)
-- Per-ticker sentiment on every REST and WebSocket response (`tickers` field)
+- Natural-language archive search (`GET /v1/news/search`)
+- Per-ticker sentiment on Max news articles from REST feed/search and WebSocket events (`tickers` field)
+- [JEV-powered News Insights](/concepts/news-insights): available through explicit `insights=true` opt-in
 - 60 req/min rate limit
 
 ## Checking Your Plan

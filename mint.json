@@ -42,7 +42,7 @@
     },
     {
       "group": "Concepts",
-      "pages": ["concepts/credits", "concepts/rate-limits", "concepts/webhooks"]
+      "pages": ["concepts/credits", "concepts/rate-limits", "concepts/webhooks", "concepts/news-insights"]
     },
     {
       "group": "API Reference",

@@ -11,7 +11,7 @@ https://api.tradingnews.press
 
 ## Authentication
 
-All endpoints require an API key via the `X-API-Key` header:
+REST endpoints require an API key via the `X-API-Key` header. WebSocket connections use the `api_key` query parameter:
 
 ```bash
 curl -H "X-API-Key: tn_live_your_key" https://api.tradingnews.press/v1/news
@@ -19,7 +19,7 @@ curl -H "X-API-Key: tn_live_your_key" https://api.tradingnews.press/v1/news
 
 ## Response Format
 
-All responses are JSON. Successful responses return `200`. Error responses include a `detail` field:
+REST responses are JSON and successful REST requests return `200`. A successful WebSocket connection upgrades with `101` and then receives JSON article messages. REST error responses include a `detail` field:
 
 ```json
 { "detail": "Error description" }
@@ -38,6 +38,7 @@ Every article returned by the API follows this structure:
 | `published_at` | string? | ISO 8601 publication time |
 | `received_at` | string | ISO 8601 time TradingNews received the article |
 | `tickers` | object[] | **Max plan only.** Per-ticker sentiment for the article, e.g. `[{"ticker": "AAPL", "sentiment": "positive"}]`. Empty array when no tickers are detected. Absent for Starter/Pro responses. |
+| `insights` | object | Max only, and only when `insights=true` is explicitly requested. See [News Insights](/concepts/news-insights). |
 
 ## Endpoints
 
@@ -47,3 +48,5 @@ Every article returned by the API follows this structure:
 | GET | `/v1/news/search` | Semantic search over archive | Max only |
 | WS | `/v1/stream` | Real-time firehose stream | Pro, Max |
 | GET | `/v1/account/usage` | Check plan and rate limit | All tiers |
+
+Default responses keep their existing Base/Pro six-field shape; Max also gets `tickers`. News Insights does not appear on default requests.

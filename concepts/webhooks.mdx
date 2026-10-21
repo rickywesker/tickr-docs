@@ -19,9 +19,11 @@ WebSocket streaming is available on the **Pro** ($50/mo) and **Max** ($100/mo) p
 
 The WebSocket is a **firehose** — once connected, all articles are pushed to you automatically as they arrive. There is no subscription step and no filtering. You receive everything.
 
+Max subscribers can opt in to [JEV-powered News Insights](/concepts/news-insights) with `&insights=true`; default connections are unchanged.
+
 ## Connection Limit
 
-Each user is limited to **1 concurrent WebSocket connection**. If you attempt to open a second connection, it will be rejected with close code `1008`. Close your existing connection before opening a new one.
+Each user has **1 active WebSocket connection**. A new connection from the same user takes over the slot; the old connection closes with code `1000` and reason `Superseded by new connection`.
 
 ## Message Format
 
@@ -67,6 +69,5 @@ async def stream_with_reconnect():
 
 The connection closes when:
 - Your plan does not include streaming — Starter (close code `1008`)
-- You already have an active connection (close code `1008`)
 - Invalid API key (close code `1008`)
 - Server maintenance (implement auto-reconnect)

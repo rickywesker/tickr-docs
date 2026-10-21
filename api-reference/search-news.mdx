@@ -18,6 +18,10 @@ description: "Semantic search over the article archive"
   Number of articles to return. Min: 1, Max: 100.
 </ParamField>
 
+<ParamField query="insights" type="boolean" default="false" optional>
+  Max-only explicit opt-in for News Insights. `insights=true` adds a public `insights` object to each article; default responses stay unchanged. Starter and Pro opt-in requests return `403`.
+</ParamField>
+
 ## Response
 
 <ResponseField name="count" type="integer">
@@ -29,7 +33,7 @@ description: "Semantic search over the article archive"
 </ResponseField>
 
 <ResponseField name="articles" type="Article[]">
-  Articles ranked by semantic relevance to the query. Same schema as `/v1/news`. Because semantic search is Max-only, each article includes a `tickers` array with per-ticker sentiment (e.g. `[{"ticker": "AAPL", "sentiment": "positive"}]`); the array is empty when no tickers were detected.
+  Articles ranked by semantic relevance to the query. Same schema as `/v1/news`. Because semantic search is Max-only, each article includes a `tickers` array with per-ticker sentiment (e.g. `[{"ticker": "AAPL", "sentiment": "positive"}]`); the array is empty when no tickers were detected. See [News Insights](/concepts/news-insights) for the optional Max-only enhancement.
 </ResponseField>
 
 <RequestExample>
@@ -72,7 +76,7 @@ articles = resp.json()["articles"]
       "id": "01KP8JCVDPYSS17HNRZPXNAZCQ",
       "content": "Bank of America raises terminal rate forecast after stronger-than-expected payrolls print.",
       "urgency": "flash",
-      "sentiment": "hawkish",
+      "sentiment": "neutral",
       "published_at": "2026-04-15T12:35:00+00:00",
       "received_at": "2026-04-15T12:35:18.114002+00:00",
       "tickers": [

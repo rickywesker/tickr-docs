@@ -1,0 +1,64 @@
+---
+title: JEV-powered News Insights
+description: "Max opt-in for public news event context"
+---
+
+<Note>
+**Available for Max subscribers.** Request `insights=true` to receive News Insights. Default requests and response fields remain unchanged.
+</Note>
+
+## Availability and opt-in
+
+News Insights is **Max-only** and never added implicitly. Request `insights=true` on one of these existing endpoints:
+
+| Transport | Opt-in request |
+|-----------|----------------|
+| REST news | `GET /v1/news?insights=true` with `X-API-Key: YOUR_KEY` |
+| REST search | `GET /v1/news/search?q=Fed%20rate%20decision&insights=true` with `X-API-Key: YOUR_KEY` |
+| WebSocket | `wss://api.tradingnews.press/v1/stream?api_key=YOUR_KEY&insights=true` |
+
+No WebSocket subscription message or ticker filter is needed. Starter and Pro cannot opt in: REST opt-in returns `403`, and WebSocket opt-in closes before acceptance with code `1008`. Omit the parameter or use `insights=false` to keep the existing Base/Pro six-field article or Max article with `tickers`.
+
+## Public response fields
+
+When requested by a Max client, each article adds an `insights` object. The base article fields (`id`, `content`, `urgency`, `sentiment`, `published_at`, `received_at`) and Max `tickers` remain unchanged.
+
+| Field | Meaning |
+|-------|---------|
+| `version` | Public schema version, currently `1` |
+| `status` | `ready`, `partial`, `timeout`, or `unavailable` |
+| `analyzed_at` | Analysis time, when available |
+| `priority` | `focus` for `breaking`, `watch` for `flash`, `background` for `regular`; may be `null` when analysis is unavailable |
+| `event_type`, `report_type` | Event and report classifications, when available |
+| `market_relevance` | Optional relevance values for `ES`, `NQ`, and `YM` |
+| `related_tickers` | Optional items with `ticker`, `relation`, and `probability` |
+| `ticker_coverage` | Optional `expected` and `assessed` counts |
+| `universe` | Optional `as_of`, `kind`, and `status` metadata |
+
+Fields beyond `version` and `status` may be omitted or `null` when no public result is available. A minimal unavailable result is `{"version":1,"status":"unavailable"}`.
+
+```json Example Max article with News Insights
+{
+  "id": "01KNKV33C9DDADR1HRRWGCSA8V",
+  "content": "Central bank holds its policy rate steady",
+  "urgency": "breaking",
+  "sentiment": "neutral",
+  "published_at": "2026-10-12T14:00:00Z",
+  "received_at": "2026-10-12T14:00:00.250Z",
+  "tickers": [],
+  "insights": {
+    "version": 1,
+    "status": "ready",
+    "analyzed_at": "2026-10-12T14:00:01Z",
+    "priority": "focus",
+    "event_type": "monetary_policy",
+    "report_type": "reported_event",
+    "market_relevance": { "ES": 0.9, "NQ": 0.8, "YM": 0.7 },
+    "related_tickers": [],
+    "ticker_coverage": { "expected": 122, "assessed": 122 },
+    "universe": { "as_of": "2026-10-08", "kind": "official_etf_holdings_proxy", "status": "available" }
+  }
+}
+```
+
+`related_tickers[].probability` measures potential association between a news item and a ticker. It does **not** predict price direction, returns, or a trading outcome. News Insights is informational, not investment advice.

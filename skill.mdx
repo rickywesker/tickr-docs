@@ -36,7 +36,7 @@ https://api.tradingnews.press
 
 ## Authentication
 
-All requests require an API key via the `X-API-Key` header:
+REST requests require an API key via the `X-API-Key` header; WebSocket uses the `api_key` query parameter:
 
 ```bash
 curl -H "X-API-Key: YOUR_KEY" https://api.tradingnews.press/v1/news
@@ -46,11 +46,11 @@ API keys are created in the [TradingNews Dashboard](https://tradingnews.press/da
 
 ## Plans
 
-| Plan | Price | REST Rate Limit | WebSocket | Semantic Search | Per-Ticker Sentiment |
-|------|-------|----------------|-----------|-----------------|----------------------|
-| Starter | $20/mo | 1 req/min | No | No | No |
-| Pro | $50/mo | 30 req/min | Yes (1 connection) | No | No |
-| Max | $100/mo | 60 req/min | Yes (1 connection) | Yes | Yes |
+| Plan | Price | REST Rate Limit | WebSocket | Natural-language Search | Per-Ticker Sentiment | News Insights |
+|------|-------|----------------|-----------|-------------------------|----------------------|---------------|
+| Starter | $20/mo | 1 req/min | No | No | No | No |
+| Pro | $50/mo | 30 req/min | Yes (1 connection) | No | No | No |
+| Max | $100/mo | 60 req/min | Yes (1 connection) | Yes | Yes | Yes (opt-in) |
 
 All plans can be billed monthly or annually (annual saves 30%).
 
@@ -68,7 +68,10 @@ curl -H "X-API-Key: YOUR_KEY" \
 **Query parameters:**
 - `limit` (int, 1-100, default 50) — number of articles
 - `urgency` (string, optional) — filter: `breaking`, `flash`, or `regular`
-- `since` (ISO datetime, optional) — articles after this time (Starter: 24h max, Pro: 7 days max)
+- `since` (ISO datetime, optional) — articles at or after this time (Starter: 24h max, Pro/Max: 7 days max)
+- `order` (`desc` or `asc`, default `desc`) — sort by received time
+- `after_id` (26-character ULID, optional) — forward cursor; requires `order=asc` and `since`
+- `insights` (boolean, default `false`) — Max-only explicit opt-in; Starter and Pro return `403` when true
 
 **Response:**
 ```json
@@ -79,7 +82,7 @@ curl -H "X-API-Key: YOUR_KEY" \
       "id": "01KNKV33C9DDADR1HRRWGCSA8V",
       "content": "Fed holds rates steady at 4.25-4.50%, signals patience on cuts",
       "urgency": "breaking",
-      "sentiment": null,
+      "sentiment": "neutral",
       "published_at": "2026-04-07T14:30:00+00:00",
       "received_at": "2026-04-07T14:30:02+00:00"
     }
@@ -94,11 +97,13 @@ curl -H "X-API-Key: YOUR_KEY" \
 | `content` | string | Article text |
 | `urgency` | string | `breaking`, `flash`, or `regular` |
 | `sentiment` | string? | Sentiment label (when available) |
-| `published_at` | string | ISO 8601 publication time |
+| `published_at` | string? | ISO 8601 publication time, when available |
 | `received_at` | string | ISO 8601 time API received it |
 | `tickers` | object[] | **Max only.** Per-ticker sentiment, e.g. `[{"ticker": "AAPL", "sentiment": "positive"}]`. Empty array when no tickers detected. Absent on Starter/Pro. |
 
 `since` lookback is capped at 24h for Starter and 7 days for Pro/Max.
+
+**Response tiers:** Base/Pro return the six article fields above; Max additionally returns `tickers`. Max requests with `insights=true` additionally return the public `insights` object described in [News Insights](/concepts/news-insights).
 
 ### GET /v1/news/search — Semantic search (Max only)
 
@@ -110,6 +115,7 @@ curl -H "X-API-Key: YOUR_KEY" \
 **Query parameters:**
 - `q` (string, 2-500 chars, required) — natural-language query
 - `limit` (int, 1-100, default 20)
+- `insights` (boolean, default `false`) — Max-only explicit opt-in; Starter and Pro return `403` when true
 
 **Response:**
 ```json
@@ -121,7 +127,7 @@ curl -H "X-API-Key: YOUR_KEY" \
       "id": "01KP8JCVDPYSS17HNRZPXNAZCP",
       "content": "Federal Reserve official Hammack ...",
       "urgency": "regular",
-      "sentiment": null,
+      "sentiment": "neutral",
       "published_at": "2026-04-15T12:38:07+00:00",
       "received_at": "2026-04-15T12:38:28+00:00",
       "tickers": []
@@ -162,9 +168,10 @@ wss://api.tradingnews.press/v1/stream?api_key=YOUR_KEY
 
 - **No subscription message needed** — connect and receive (firehose)
 - **Pro or Max plan required** — Starter keys get rejected (code 1008)
-- **1 connection per user** — second connection is rejected
+- **1 active connection per user** — a new connection supersedes the old one; the old socket closes with code `1000`
 - Articles arrive as JSON, same format as REST
 - **Max streams** include the `tickers` field on each message; Pro streams omit it
+- **News Insights** is available to Max with `&insights=true`; Starter and Pro opt-in connections close with `1008`. Defaults stay unchanged. See [News Insights](/concepts/news-insights).
 - Subscription status is re-checked every 5 minutes — expired subs are dropped with code 1008
 
 ### Python example

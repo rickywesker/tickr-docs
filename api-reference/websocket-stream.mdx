@@ -11,6 +11,8 @@ wss://api.tradingnews.press/v1/stream?api_key=YOUR_KEY
 
 API key is passed as a query parameter (not a header) since WebSocket connections don't support custom headers in browsers.
 
+The optional `&insights=true` query parameter adds public News Insights for Max connections; Starter and Pro opt-in connections close with code `1008` before acceptance. Default streams stay unchanged. See [News Insights](/concepts/news-insights).
+
 <Note>
 WebSocket streaming requires the **Pro** ($50/mo) or **Max** plan. Starter plan connections are rejected with close code `1008`.
 </Note>
@@ -50,17 +52,16 @@ The server pushes JSON articles as they arrive:
 }
 ```
 
-Max-plan streams add a `tickers` array on each message (empty when no tickers are detected). Pro streams omit the field entirely.
+Max-plan streams add a `tickers` array on each message (empty when no tickers are detected). Pro streams omit the field entirely. With `insights=true`, an enabled Max stream also adds `insights`; Pro cannot opt in.
 
 ## Connection Limit
 
-Each user is limited to **1 concurrent WebSocket connection**. Attempting a second connection returns close code `1008` with reason "Only 1 WebSocket connection allowed."
+Each user has **1 active WebSocket connection**. A new connection for the same user takes over the slot and the old connection closes with code `1000` and reason `Superseded by new connection`. The new connection is not rejected merely because an old one exists.
 
 ## Disconnection
 
 The connection closes when:
 - Your plan is not Pro or Max (close code `1008`)
-- You already have an active connection (close code `1008`)
 - Invalid or inactive API key (close code `1008`)
 - Your subscription expires mid-stream — the server re-checks every 5 minutes (close code `1008`)
 - Server maintenance (implement auto-reconnect)

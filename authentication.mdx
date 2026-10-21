@@ -5,7 +5,7 @@ description: "How to authenticate your API requests"
 
 ## API Key Authentication
 
-All API requests require an API key passed via the `X-API-Key` header.
+REST requests require an API key in the `X-API-Key` header. WebSocket connections use the `api_key` query parameter, as browsers cannot set a custom WebSocket header.
 
 ```bash
 curl -H "X-API-Key: tn_live_your_key_here" \
@@ -47,13 +47,14 @@ Never expose your API key in client-side code, public repositories, or browser J
 | `403` | Key is inactive or access blocked |
 | `429` | Rate limit exceeded |
 
-```json
-// 401 — Invalid key
+```json 401 — Invalid key
 { "detail": "Invalid API key" }
+```
 
-// 403 — Inactive key
+```json 403 — Inactive key
 { "detail": "API key is inactive" }
+```
 
-// 429 — Rate limited
+```json 429 — Rate limited
 { "detail": "Rate limit exceeded. Try again shortly." }
 ```
